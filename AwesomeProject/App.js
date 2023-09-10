@@ -1,50 +1,37 @@
-
-import "react-native-gesture-handler";
-import React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import React  from "react";
+import {Provider, useSelector} from 'react-redux'
+import { useDispatch } from "react-redux";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import 'react-native-gesture-handler';
+import { PersistGate } from 'redux-persist/integration/react';
+import {persistor} from './redux/store'
+import { store } from "./redux/store";
+import { Home } from "./Screens/Home"
+import { LoginScreen } from "./Screens/LoginScreen"
+import { RegistrationScreen } from "./Screens/RegistrationScreen"
 
-import LoginScreen from "./src/screens/authScreens/LoginScreen";
-import RegistrationScreen from "./src/screens/authScreens/RegistrationScreen";
-import Home from "./src/screens/mainScreens/Home";
 
-import { useFonts } from "expo-font";
+const MainStack = createStackNavigator();
 
-const AuthStack = createStackNavigator();
-
-const App = () => {
-  const [fontsLoaded] = useFonts({
-    "Roboto-Regular": require("./assets/fonts/Roboto/Roboto-Regular.ttf"),
-    "Roboto-Medium": require("./assets/fonts/Roboto/Roboto-Medium.ttf"),
-    "Roboto-Bold": require("./assets/fonts/Roboto/Roboto-Bold.ttf"),
-  });
-
-  if (!fontsLoaded) {
-    return null;
-  }
+export default function App() {
 
   return (
+    <Provider store={store}>
+       <PersistGate loading={null} persistor={persistor}>
     <NavigationContainer>
-      <AuthStack.Navigator initialRouteName="Login">
-        <AuthStack.Screen
-          name="Registration"
-          component={RegistrationScreen}
-          options={{ headerShown: false }}
-        />
-        <AuthStack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ headerShown: false }}
-        />
-        <AuthStack.Screen
-          name="Home"
-          component={Home}
-          options={{ headerShown: false }}
-        />
-      </AuthStack.Navigator>
+      <MainStack.Navigator >
+      <MainStack.Screen name="Login" component={LoginScreen} 
+        options={{headerShown: false}}/>
+      <MainStack.Screen name="Registration" component={RegistrationScreen} 
+        options={{headerShown: false}}/>
+      <MainStack.Screen name="Home" component={Home} 
+        options={{headerShown: false}}/>
+      </MainStack.Navigator>
     </NavigationContainer>
+    </PersistGate>
+    </Provider>
   );
-};
+}
 
-export default App;
+
